@@ -3,6 +3,7 @@ package lib
 import (
 	"encoding/json"
 	"io/ioutil"
+	"os"
 )
 
 const (
@@ -18,16 +19,19 @@ const (
 
 // DNAFile : user defined DNA config
 type DNAFile struct {
-	version int
-	require []string
-	tasks   json.RawMessage
+	Version int
+	Require []string
+	Scripts map[string]DNAScript
 }
+
+// DNAScript : user defined script
+type DNAScript struct{}
 
 // Find : recursively find a DNAFile in the current repo
 func Find() *DNAFile {
-	var target *DNAFile
+	var config *DNAFile
 
-	for i, directory, stop := 0, ".", false; target == nil && !stop && i < DEPTH; i, directory = i+1, directory+"/.." {
+	for i, directory, end := 0, ".", false; config == nil && !end && i < DEPTH; i, directory = i+1, directory+"/.." {
 		files, err := ioutil.ReadDir(directory)
 
 		if err != nil {
@@ -36,14 +40,27 @@ func Find() *DNAFile {
 
 		for _, file := range files {
 			if file.Name() == TARGET {
-				target = &DNAFile{}
+				config = parse(file)
 			}
 
 			if file.Name() == GITFILE {
-				stop = true
+				end = true
 			}
 		}
 	}
 
-	return target
+	return config
+}
+
+func parse(file os.FileInfo) *DNAFile {
+	var output DNAFile
+	content, err := ioutil.ReadFile(file.Name())
+
+	if err != nil {
+		return nil
+	}
+
+	json.Unmarshal(content, &output)
+
+	return &output
 }
