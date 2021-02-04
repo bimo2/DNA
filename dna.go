@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"github.com/bimo2/DNA/lib"
 )
 
 const (
@@ -14,9 +16,10 @@ const (
 )
 
 func main() {
+	dnaFile := lib.Find()
 	argv := os.Args[1:]
 
-	fmt.Println(argv)
+	fmt.Println(argv, dnaFile)
 
 	if len(argv) < 1 {
 		return
