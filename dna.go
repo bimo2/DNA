@@ -32,7 +32,7 @@ func main() {
 			lib.Create()
 		}
 
-		console.Message("Configured!")
+		console.Message("dna.json configured")
 
 	default:
 		return
