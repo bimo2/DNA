@@ -2,9 +2,10 @@ package cli
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
+
+	"github.com/bimo2/DNA/console"
 )
 
 const (
@@ -28,8 +29,9 @@ type DNAScript struct {
 }
 
 // Load : recursively find a DNAFile in the current repo
-func Load(filename string) *DNAFile {
+func Load(filename string) (*DNAFile, error) {
 	var config *DNAFile
+	var err error
 
 	for i, directory, end := 0, ".", false; config == nil && !end && i < depth; i, directory = i+1, directory+"/.." {
 		files, err := ioutil.ReadDir(directory)
@@ -40,7 +42,7 @@ func Load(filename string) *DNAFile {
 
 		for _, file := range files {
 			if file.Name() == filename {
-				config = parse(file)
+				config, err = parse(file)
 			}
 
 			if file.Name() == gitfile {
@@ -49,20 +51,19 @@ func Load(filename string) *DNAFile {
 		}
 	}
 
-	return config
+	return config, err
 }
 
-func parse(file os.FileInfo) *DNAFile {
+func parse(file os.FileInfo) (*DNAFile, error) {
 	var output DNAFile
 	content, err := ioutil.ReadFile(file.Name())
 
 	if err != nil {
-		return nil
+		console.Error("Failed to parse")
+		return nil, err
 	}
 
 	json.Unmarshal(content, &output)
 
-	fmt.Println(output)
-
-	return &output
+	return &output, nil
 }

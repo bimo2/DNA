@@ -50,8 +50,9 @@ func Initialize(filename string) {
 	err := json.Indent(&data, []byte(template), "", "  ")
 
 	if err != nil {
-		console.Error("failed build template")
+		console.Error("Failed to build template")
 	}
 
 	ioutil.WriteFile("./"+filename, data.Bytes(), 0777)
+	console.Message("Created \"" + filename + "\" file!")
 }

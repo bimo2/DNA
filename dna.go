@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/bimo2/DNA/cli"
@@ -19,25 +20,53 @@ const (
 )
 
 func main() {
-	dnaFile := cli.Load(FILENAME)
-	argv := os.Args[1:]
+	dnaFile, err := cli.Load(FILENAME)
 
-	if len(argv) < 1 {
+	if err != nil {
 		return
 	}
 
-	switch argv[0] {
-	case "version":
-		console.Message("version " + VERSION + " (MIT)")
+	argv := os.Args[1:]
 
-	case "init":
+	if len(argv) < 1 {
 		if dnaFile == nil {
-			cli.Initialize(FILENAME)
+			notFound()
+			return
 		}
 
-		console.Message("\"" + FILENAME + "\" configured")
+		console.Message("Configured!")
+	}
+
+	switch argv[0] {
+	case "version", "v":
+		console.Message("(MIT) version " + console.BOLD + VERSION)
+
+	case "init", "i":
+		if dnaFile == nil {
+			cli.Initialize(FILENAME)
+			return
+		}
+
+		console.Error("\"" + FILENAME + "\" file already exists")
+
+	case "list", "ls":
+		if dnaFile == nil {
+			notFound()
+			return
+		}
+
+		console.Message(fmt.Sprint(len(dnaFile.Scripts)) + " scripts")
+
+		for name, script := range dnaFile.Scripts {
+			fmt.Println("# " + console.BLUE + console.BOLD + fmt.Sprintf("%-12s", name) + console.RESET + " " + script.Info)
+		}
 
 	default:
 		return
 	}
+
+}
+
+func notFound() {
+	console.Message("Add DNA: " + console.RESET + "> " + BINARY + " init")
 }
