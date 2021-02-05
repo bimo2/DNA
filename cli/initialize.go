@@ -1,4 +1,4 @@
-package lib
+package cli
 
 import (
 	"bytes"
@@ -44,8 +44,8 @@ const template = `
 }
 `
 
-// Create : write template dna.json to working directory
-func Create() {
+// Initialize : create template dna.json
+func Initialize(filename string) {
 	var data bytes.Buffer
 	err := json.Indent(&data, []byte(template), "", "  ")
 
@@ -53,5 +53,5 @@ func Create() {
 		console.Error("failed build template")
 	}
 
-	ioutil.WriteFile("./dna.json", data.Bytes(), 0777)
+	ioutil.WriteFile("./"+filename, data.Bytes(), 0777)
 }
