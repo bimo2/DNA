@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
+	"github.com/bimo2/DNA/console"
 	"github.com/bimo2/DNA/lib"
 )
 
@@ -19,15 +19,20 @@ func main() {
 	dnaFile := lib.Find()
 	argv := os.Args[1:]
 
-	fmt.Println(argv, dnaFile)
-
 	if len(argv) < 1 {
 		return
 	}
 
 	switch argv[0] {
-	case "--version", "-v":
-		fmt.Println("DNA version " + VERSION)
+	case "version":
+		console.Message("version " + VERSION + " (MIT)")
+
+	case "init":
+		if dnaFile == nil {
+			lib.Create()
+		}
+
+		console.Message("Configured!")
 
 	default:
 		return
