@@ -64,6 +64,5 @@ func parse(file os.FileInfo) (*DNAFile, error) {
 	}
 
 	json.Unmarshal(content, &output)
-
 	return &output, nil
 }
