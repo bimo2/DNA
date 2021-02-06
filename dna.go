@@ -73,7 +73,11 @@ func main() {
 		if !exists {
 			console.Error("\"" + task + "\" not defined")
 		} else {
-			cli.ExecSync(&script)
+			err := cli.ExecSync(&script)
+
+			if err != nil {
+				console.Error(err.Error())
+			}
 		}
 	}
 }

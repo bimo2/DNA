@@ -8,7 +8,7 @@ import (
 )
 
 // ExecSync : perform synchronous command
-func ExecSync(script *DNAScript) {
+func ExecSync(script *DNAScript) error {
 	for _, command := range script.Commands {
 		console.Message(command)
 
@@ -20,7 +20,9 @@ func ExecSync(script *DNAScript) {
 		err := cmd.Run()
 
 		if err != nil {
-			// return err
+			return err
 		}
 	}
+
+	return nil
 }
