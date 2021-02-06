@@ -62,9 +62,20 @@ func main() {
 		}
 
 	default:
-		return
-	}
+		if dnaFile == nil {
+			notFound()
+			return
+		}
 
+		task := argv[0]
+		script, exists := dnaFile.Scripts[task]
+
+		if !exists {
+			console.Error("\"" + task + "\" not defined")
+		} else {
+			cli.ExecSync(&script)
+		}
+	}
 }
 
 func notFound() {
