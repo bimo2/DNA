@@ -2,10 +2,9 @@ package protocol
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"os"
-
-	"github.com/bimo2/DNA/console"
 )
 
 const (
@@ -28,8 +27,8 @@ type DNAScript struct {
 	Commands []string
 }
 
-// Load : recursively find a DNAFile in the current repo
-func Load(filename string) (*DNAFile, error) {
+// Find : recursively find a DNAFile in the current repo
+func Find(filename string) (*DNAFile, error) {
 	var config *DNAFile
 	var err error
 
@@ -37,6 +36,7 @@ func Load(filename string) (*DNAFile, error) {
 		files, err := ioutil.ReadDir(directory)
 
 		if err != nil {
+			err = errors.New("Failed to read directory")
 			break
 		}
 
@@ -59,8 +59,7 @@ func parse(file os.FileInfo) (*DNAFile, error) {
 	content, err := ioutil.ReadFile(file.Name())
 
 	if err != nil {
-		console.Error("Failed to parse")
-		return nil, err
+		return nil, errors.New("Failed to parse: " + err.Error())
 	}
 
 	json.Unmarshal(content, &output)

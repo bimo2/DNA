@@ -10,7 +10,7 @@ import (
 )
 
 // ExecSync : perform synchronous command
-func ExecSync(context *string, script *protocol.DNAScript) error {
+func ExecSync(context *string, script *protocol.DNAScript) {
 	start := time.Now()
 
 	for _, command := range script.Commands {
@@ -21,14 +21,12 @@ func ExecSync(context *string, script *protocol.DNAScript) error {
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 
-		err := cmd.Run()
-
-		if err != nil {
-			return err
+		if err := cmd.Run(); err != nil {
+			console.Error(err.Error())
+			return
 		}
 	}
 
 	elapsed := time.Now().Sub(start)
 	console.Success(elapsed.String())
-	return nil
 }

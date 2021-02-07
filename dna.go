@@ -22,35 +22,27 @@ const (
 )
 
 func main() {
-	config, err := protocol.Load(FILENAME)
+	config, err := protocol.Find(FILENAME)
 
 	if err != nil {
+		console.Error(err.Error())
 		return
 	}
 
 	argv := os.Args[1:]
 
 	if len(argv) < 1 {
-		if config == nil {
-			console.Message("Not configured\n", nil)
-			fmt.Println("# " + console.BOLD + fmt.Sprintf("%-12s", "init, i") + console.DEFAULT + "Create `dna.json` template")
-		} else {
-			console.Message("Configured!\n", nil)
-		}
-
-		fmt.Println("# " + console.BOLD + fmt.Sprintf("%-12s", "list, ls") + console.DEFAULT + "List all project scripts")
-		fmt.Println("# " + console.BOLD + fmt.Sprintf("%-12s", "version, v") + console.DEFAULT + VERSION + " (" + runtime.GOOS + ")")
-		fmt.Println()
+		listCommands(config != nil)
 		return
 	}
 
 	switch argv[0] {
 	case "init", "i":
 		if config == nil {
-			cli.Initialize(FILENAME)
+			cli.Init(FILENAME)
 		} else {
 			message := "`" + FILENAME + "` already exists"
-			console.Message(message, nil)
+			console.Error(message)
 		}
 
 	case "list", "ls":
@@ -58,20 +50,7 @@ func main() {
 			return
 		}
 
-		count := fmt.Sprint(len(config.Scripts)) + " scripts"
-		console.Message(count, nil)
-
-		if len(config.Scripts) < 1 {
-			return
-		}
-
-		fmt.Println()
-
-		for name, script := range config.Scripts {
-			fmt.Println("# " + console.BOLD + fmt.Sprintf("%-12s", name) + console.DEFAULT + script.Info)
-		}
-
-		fmt.Println()
+		cli.List(&config.Scripts)
 
 	case "version", "v":
 		version := "version " + VERSION + " (" + runtime.GOOS + ")"
@@ -82,19 +61,29 @@ func main() {
 			return
 		}
 
-		task := argv[0]
-		script, exists := config.Scripts[task]
+		name := argv[0]
+		script, exists := config.Scripts[name]
 
 		if !exists {
-			console.Error("`" + task + "` not defined")
-		} else {
-			err := cli.ExecSync(&task, &script)
-
-			if err != nil {
-				console.Error(err.Error())
-			}
+			console.Error("`" + name + "` not defined")
+			return
 		}
+
+		cli.ExecSync(&name, &script)
 	}
+}
+
+func listCommands(init bool) {
+	if !init {
+		console.Message("Not configured\n", nil)
+		fmt.Println("# " + console.BOLD + fmt.Sprintf("%-14s", "init, i") + console.DEFAULT + "Create `dna.json` template")
+	} else {
+		console.Message("Configured!\n", nil)
+	}
+
+	fmt.Println("# " + console.BOLD + fmt.Sprintf("%-14s", "list, ls") + console.DEFAULT + "List all project scripts")
+	fmt.Println("# " + console.BOLD + fmt.Sprintf("%-14s", "version, v") + console.DEFAULT + "Get version information")
+	fmt.Println()
 }
 
 func notFound(config *protocol.DNAFile) bool {
