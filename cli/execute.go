@@ -1,20 +1,20 @@
 package cli
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"time"
 
 	"github.com/bimo2/DNA/console"
+	"github.com/bimo2/DNA/protocol"
 )
 
 // ExecSync : perform synchronous command
-func ExecSync(script *DNAScript) error {
+func ExecSync(context *string, script *protocol.DNAScript) error {
 	start := time.Now()
 
 	for _, command := range script.Commands {
-		console.Message(command)
+		console.Message(command, context)
 
 		cmd := exec.Command("sh", "-c", command)
 		cmd.Stdin = os.Stdin
@@ -29,6 +29,6 @@ func ExecSync(script *DNAScript) error {
 	}
 
 	elapsed := time.Now().Sub(start)
-	fmt.Println("Time: " + elapsed.String())
+	console.Success(elapsed.String())
 	return nil
 }

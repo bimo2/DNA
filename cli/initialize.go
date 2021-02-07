@@ -54,5 +54,5 @@ func Initialize(filename string) {
 	}
 
 	ioutil.WriteFile("./"+filename, data.Bytes(), 0777)
-	console.Message("Created \"" + filename + "\" file!")
+	console.Message("Created `"+filename+"` template!", nil)
 }

@@ -5,25 +5,42 @@ import (
 )
 
 const (
-	// BOLD : console bold text
-	BOLD = "\033[1m"
+	// DEFAULT : default console font interpolation
+	DEFAULT = "\u001b[0m"
 
-	// BLUE : console blue text
-	BLUE = "\u001b[34m"
+	// BOLD : console font style interpolation
+	BOLD = "\u001b[1m"
 
-	// RED : console red text
+	// REGULAR : console font style interpolation
+	REGULAR = "\u001b[22m"
+
+	// RED : console font colour interpolation
 	RED = "\u001b[31m"
 
-	// RESET : console default text
-	RESET = "\u001b[0m"
+	// GREEN : console font colour interpolation
+	GREEN = "\u001b[32m"
+
+	// BLUE : console font colour interpolation
+	BLUE = "\u001b[34m"
 )
 
-// Message : print program messages
-func Message(log string) {
-	fmt.Println(BLUE + "[DNA] " + log + RESET)
+// Message : print message
+func Message(log string, context *string) {
+	tag := "DNA"
+
+	if context != nil {
+		tag = *context
+	}
+
+	fmt.Println(BLUE + BOLD + tag + " " + REGULAR + log + DEFAULT)
 }
 
-// Error : print program errors
+// Error : print error message
 func Error(log string) {
-	fmt.Println(RED + "[DNA] " + log + RESET)
+	fmt.Println(RED + BOLD + "ERROR " + REGULAR + log + DEFAULT)
+}
+
+// Success : print success message
+func Success(log string) {
+	fmt.Println(GREEN + BOLD + "DONE " + REGULAR + log + DEFAULT)
 }

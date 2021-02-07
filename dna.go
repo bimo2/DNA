@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"os"
+	"runtime"
 
 	"github.com/bimo2/DNA/cli"
 	"github.com/bimo2/DNA/console"
+	"github.com/bimo2/DNA/protocol"
 )
 
 const (
@@ -20,7 +22,7 @@ const (
 )
 
 func main() {
-	dnaFile, err := cli.Load(FILENAME)
+	config, err := protocol.Load(FILENAME)
 
 	if err != nil {
 		return
@@ -29,51 +31,64 @@ func main() {
 	argv := os.Args[1:]
 
 	if len(argv) < 1 {
-		if dnaFile == nil {
-			notFound()
-			return
+		if config == nil {
+			console.Message("Not configured\n", nil)
+			fmt.Println("# " + console.BOLD + fmt.Sprintf("%-12s", "init, i") + console.DEFAULT + "Create `dna.json` template")
+		} else {
+			console.Message("Configured!\n", nil)
 		}
 
-		console.Message("Configured!")
+		fmt.Println("# " + console.BOLD + fmt.Sprintf("%-12s", "list, ls") + console.DEFAULT + "List all project scripts")
+		fmt.Println("# " + console.BOLD + fmt.Sprintf("%-12s", "version, v") + console.DEFAULT + VERSION + " (" + runtime.GOOS + ")")
+		fmt.Println()
+		return
 	}
 
 	switch argv[0] {
-	case "version", "v":
-		console.Message("(MIT) version " + console.BOLD + VERSION)
-
 	case "init", "i":
-		if dnaFile == nil {
+		if config == nil {
 			cli.Initialize(FILENAME)
-			return
+		} else {
+			message := "`" + FILENAME + "` already exists"
+			console.Message(message, nil)
 		}
-
-		console.Error("\"" + FILENAME + "\" file already exists")
 
 	case "list", "ls":
-		if dnaFile == nil {
-			notFound()
+		if notFound(config) {
 			return
 		}
 
-		console.Message(fmt.Sprint(len(dnaFile.Scripts)) + " scripts")
+		count := fmt.Sprint(len(config.Scripts)) + " scripts"
+		console.Message(count, nil)
 
-		for name, script := range dnaFile.Scripts {
-			fmt.Println("# " + console.BLUE + console.BOLD + fmt.Sprintf("%-12s", name) + console.RESET + " " + script.Info)
+		if len(config.Scripts) < 1 {
+			return
 		}
 
+		fmt.Println()
+
+		for name, script := range config.Scripts {
+			fmt.Println("# " + console.BOLD + fmt.Sprintf("%-12s", name) + console.DEFAULT + script.Info)
+		}
+
+		fmt.Println()
+
+	case "version", "v":
+		version := "version " + VERSION + " (" + runtime.GOOS + ")"
+		console.Message(version, nil)
+
 	default:
-		if dnaFile == nil {
-			notFound()
+		if notFound(config) {
 			return
 		}
 
 		task := argv[0]
-		script, exists := dnaFile.Scripts[task]
+		script, exists := config.Scripts[task]
 
 		if !exists {
-			console.Error("\"" + task + "\" not defined")
+			console.Error("`" + task + "` not defined")
 		} else {
-			err := cli.ExecSync(&script)
+			err := cli.ExecSync(&task, &script)
 
 			if err != nil {
 				console.Error(err.Error())
@@ -82,6 +97,11 @@ func main() {
 	}
 }
 
-func notFound() {
-	console.Message("Add DNA: " + console.RESET + "> " + BINARY + " init")
+func notFound(config *protocol.DNAFile) bool {
+	if config == nil {
+		console.Error("`" + FILENAME + "` not found")
+		return true
+	}
+
+	return false
 }
