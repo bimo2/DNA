@@ -74,11 +74,11 @@ func main() {
 }
 
 func listCommands(init bool) {
-	if !init {
+	if init {
+		console.Message("Configured!\n", nil)
+	} else {
 		console.Message("Not configured\n", nil)
 		fmt.Println("# " + console.BOLD + fmt.Sprintf("%-14s", "init, i") + console.DEFAULT + "Create `dna.json` template")
-	} else {
-		console.Message("Configured!\n", nil)
 	}
 
 	fmt.Println("# " + console.BOLD + fmt.Sprintf("%-14s", "list, ls") + console.DEFAULT + "List all project scripts")
