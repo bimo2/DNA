@@ -4,24 +4,25 @@
 
 **DNA is a developer workflow protocol for running command line scripts.** DNA can be configured to run common developer workflows like installing dependencies, starting servers, creating builds, running tests... with a simple CLI.
 
-## Download/Build
-
-[Download for MacOS]
+## No Build + Install
 
 ```zsh
-# build for all other platforms
-# Go ^1.15
-
-cd path/to/DNA
-go build -o _
+curl -sf https://gobinaries.com/bimo2/DNA/_ | sh
 ```
 
-## Install
+## Build + Install
+
+```zsh
+# requires Go ^1.15
+
+cd path/to/DNA
+sh bin/build.sh
+```
 
 For DNA to work globally, the `_` binary needs to be in available in `PATH`. Adding `_` to `usr/local/bin` is recommended:
 
 ```zsh
-cp /path/to/_ /usr/local/bin
+cp /path/to/DNA/dist/_ /usr/local/bin
 ```
 
 ## Configure
@@ -71,12 +72,12 @@ _ buy:xrp
 
 ```zsh
 # run from source
-go run .
+go run ./_
 
 # build binary
-go build -o _
+sh bin/build.sh
 ```
 
-<hr />
+#
 
-MIT. Copyright &copy; 2021 Bimal Bhagrath. 
+MIT. Copyright &copy; 2021 Bimal Bhagrath
