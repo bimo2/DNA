@@ -28,8 +28,9 @@ type DNAScript struct {
 }
 
 // Find : recursively find a DNAFile in the current repo
-func Find(filename string) (*DNAFile, error) {
+func Find(filename string) (*DNAFile, *string, error) {
 	var config *DNAFile
+	var path string
 	var err error
 
 	for i, directory, end := 0, ".", false; config == nil && !end && i < depth; i, directory = i+1, directory+"/.." {
@@ -42,7 +43,8 @@ func Find(filename string) (*DNAFile, error) {
 
 		for _, file := range files {
 			if file.Name() == filename {
-				config, err = parse(file)
+				config, err = parse(directory, file)
+				path = directory
 			}
 
 			if file.Name() == gitfile {
@@ -51,12 +53,12 @@ func Find(filename string) (*DNAFile, error) {
 		}
 	}
 
-	return config, err
+	return config, &path, err
 }
 
-func parse(file os.FileInfo) (*DNAFile, error) {
+func parse(path string, file os.FileInfo) (*DNAFile, error) {
 	var output DNAFile
-	content, err := ioutil.ReadFile(file.Name())
+	content, err := ioutil.ReadFile(path + "/" + file.Name())
 
 	if err != nil {
 		return nil, errors.New("Failed to parse: " + err.Error())

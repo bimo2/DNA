@@ -22,7 +22,7 @@ const (
 )
 
 func main() {
-	config, err := protocol.Find(FILENAME)
+	config, path, err := protocol.Find(FILENAME)
 
 	if err != nil {
 		console.Error(err.Error())
@@ -69,7 +69,7 @@ func main() {
 			return
 		}
 
-		cli.ExecSync(&name, &script)
+		cli.ExecSync(&name, &script, path)
 	}
 }
 

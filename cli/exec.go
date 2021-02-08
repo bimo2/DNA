@@ -10,13 +10,14 @@ import (
 )
 
 // ExecSync : perform synchronous command
-func ExecSync(context *string, script *protocol.DNAScript) {
+func ExecSync(context *string, script *protocol.DNAScript, path *string) {
 	start := time.Now()
 
 	for _, command := range script.Commands {
 		console.Message(command, context)
 
 		cmd := exec.Command("sh", "-c", command)
+		cmd.Dir = *path
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
