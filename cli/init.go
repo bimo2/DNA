@@ -10,10 +10,7 @@ import (
 
 const template = `
 {
-	"DNA": {
-		"version": 0,
-		"spec": "https://github.com/bimo2/DNA"
-	},
+	"_version": 0,
 	"scripts": {
 		"install": {
 			"info": "Install dependencies",

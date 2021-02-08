@@ -14,17 +14,14 @@ const (
 
 // DNAFile : user defined DNA config
 type DNAFile struct {
-	DNA struct {
-		Version int
-		Spec    string
-	}
-	Scripts map[string]DNAScript
+	Version int                  `json:"_version"`
+	Scripts map[string]DNAScript `json:"scripts"`
 }
 
 // DNAScript : user defined script
 type DNAScript struct {
-	Info     string
-	Commands []string
+	Info     string   `json:"info"`
+	Commands []string `json:"commands"`
 }
 
 // Find : recursively find a DNAFile in the current repo
