@@ -1,1 +1,4 @@
-(cd $(dirname $0)/.. && rm -rf dist && rm -rf dna.json **/dna.json)
+#!/bin/sh
+
+cd $(dirname $0)/..
+rm -rf ./dist ./dna.json **/dna.json
