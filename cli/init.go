@@ -33,7 +33,7 @@ const template = `
 		"test": {
 			"info": "Run test suites",
 			"commands": [
-				"# YOUR UNIT TEST COMMAND",
+				"# YOUR UNIT TEST COMMAND [file]",
 				"# YOUR INTEGRATION TEST COMMAND"
 			]
 		}

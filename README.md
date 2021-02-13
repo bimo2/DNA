@@ -44,25 +44,79 @@ Any `dna.json` config should contain a top level `_version` key to specify the D
       "commands": [
         "buy 750.000 xrp",
         "pay | capture -cc amex_2",
-        "deposit bimo2$balance.to"
+        "deposit bimo2 balance.to"
       ]
     }
   }
 }
 ```
 
-Workflows can be executed by script key. DNA will execute the specified commands synchronously relative to the `dna.json` directory. 
+Workflows can be executed by script key where keys should not contain spaces. DNA will execute the specified commands synchronously relative to the `dna.json` directory. 
 
 ```zsh
 _ ls
 # ...
-# buy:xrp       Buy 750 XRP tokens
+# + buy:xrp
+#   Buy 750 XRP tokens
 # ...
 
 _ buy:xrp
 # 0 `buy 750.000 xrp`
 # 1 `pay | capture -cc amex_2`
-# 2 `deposit bimo2$balance.to`
+# 2 `deposit bimo2 balance.to`
+```
+
+### Arguments
+
+Workflows can accept multiple arguments by passing them to the `_` command. Arguments can be configured by using templates in any command:
+
+```json
+{
+  "_version": 0,
+  "scripts": {
+    "buy:xrp": {
+      "info": "Buy XRP tokens",
+      "commands": [
+        "buy [amount] xrp",
+        "pay | capture -cc [card]",
+        "deposit [address] balance.to"
+      ]
+    }
+  }
+}
+```
+
+Template names are only required for documentation and should not be included in the script key. Arguments are passed to the workflow as a stack and each template in the commands is replaced by the next available argument in the stack. By default, templates resolve to an empty string (ex. the workflow is executed with too few arguments).
+
+Executing the `buy:xrp [amount] [card] [address]` workflow defined above will execute the follwoing:
+
+```zsh
+_ buy:xrp 750.000 amex_2 bimo2
+# 0 `buy 750.000 xrp`          <- [amount] = "750.000"
+# 1 `pay | capture -cc amex_2` <- [card] = "amex_2"
+# 2 `deposit bimo2 balance.to` <- [address] = "bimo2"
+
+_ buy:xrp 750.000 amex_2
+# 0 `buy 750.000 xrp`          <- [amount] = "750.000"
+# 1 `pay | capture -cc amex_2` <- [card] = "amex_2"
+# 2 `deposit balance.to`       <- [address] = ""
+
+_ buy:xrp 750.000 "" bimo2
+# 0 `buy xrp`                  <- [amount] = "750.000"
+# 1 `pay | capture -cc`        <- [card] = ""
+# 2 `deposit bimo2 balance.to` <- [address] = "bimo2"
+```
+
+### Void Commands
+
+Commands can be void during execution by prefixing the command with `# ` (space required). This can be useful to log comments or skip steps in a workflow.
+
+```json
+[
+  "buy [amount] xrp",
+  "pay | capture -cc [card]",
+  "# deposit burn_address balance.to"
+]
 ```
 
 # Developers
