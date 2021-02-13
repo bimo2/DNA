@@ -3,23 +3,40 @@ package cli
 import (
 	"os"
 	"os/exec"
+	"regexp"
 	"time"
 
 	"github.com/bimo2/DNA/console"
 	"github.com/bimo2/DNA/protocol"
 )
 
+const replace = "\\[\\w+\\]"
+
 // ExecSync : perform synchronous command
-func ExecSync(context *string, script *protocol.DNAScript, path *string) {
+func ExecSync(argv *[]string, script *protocol.DNAScript, path *string) {
+	context := (*argv)[0]
+	insert := 0
+
+	next := func(string) string {
+		if insert++; insert < len(*argv) {
+			return (*argv)[insert]
+		}
+
+		return ""
+	}
+
 	start := time.Now()
 
-	for _, command := range script.Commands {
+	for _, template := range script.Commands {
+		re := regexp.MustCompile(replace)
+		command := re.ReplaceAllStringFunc(template, next)
+
 		if command[:2] == "# " {
-			console.Message(command[2:], context)
+			console.Message(command[2:], &context)
 			continue
 		}
 
-		console.Message(command, context)
+		console.Message(command, &context)
 		cmd := exec.Command("sh", "-c", command)
 		cmd.Dir = *path
 		cmd.Stdin = os.Stdin

@@ -69,7 +69,7 @@ func main() {
 			return
 		}
 
-		cli.ExecSync(&name, &script, path)
+		cli.ExecSync(&argv, &script, path)
 	}
 }
 
