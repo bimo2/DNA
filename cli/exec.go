@@ -14,8 +14,12 @@ func ExecSync(context *string, script *protocol.DNAScript, path *string) {
 	start := time.Now()
 
 	for _, command := range script.Commands {
-		console.Message(command, context)
+		if command[:2] == "# " {
+			console.Message(command[2:], context)
+			continue
+		}
 
+		console.Message(command, context)
 		cmd := exec.Command("sh", "-c", command)
 		cmd.Dir = *path
 		cmd.Stdin = os.Stdin

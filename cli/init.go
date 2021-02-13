@@ -15,26 +15,26 @@ const template = `
 		"install": {
 			"info": "Install dependencies",
 			"commands": [
-				"echo \"YOUR INSTALL COMMAND\""
+				"# YOUR INSTALL COMMAND"
 			]
 		},
 		"build": {
 			"info": "Package for distribution",
 			"commands": [
-				"echo \"YOUR BUILD COMMAND\""
+				"# YOUR BUILD COMMAND"
 			]
 		},
 		"dev": {
 			"info": "Start development server",
 			"commands": [
-				"echo \"YOUR DEV COMMAND\""
+				"# YOUR DEV COMMAND"
 			]
 		},
 		"test": {
 			"info": "Run test suites",
 			"commands": [
-				"echo \"YOUR UNIT TEST COMMAND\"",
-				"echo \"YOUR INTEGRATION TEST COMMAND\""
+				"# YOUR UNIT TEST COMMAND",
+				"# YOUR INTEGRATION TEST COMMAND"
 			]
 		}
 	}
