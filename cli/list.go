@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/bimo2/DNA/console"
@@ -18,15 +19,24 @@ func List(scripts *map[string]protocol.DNAScript) {
 		return
 	}
 
-	for name, script := range *scripts {
+	keys := make([]string, 0, len(*scripts))
+
+	for key := range *scripts {
+		keys = append(keys, key)
+	}
+
+	sort.Strings(keys)
+
+	for _, key := range keys {
 		var params []string
+		script := (*scripts)[key]
 
 		for _, template := range script.Commands {
 			re := regexp.MustCompile(replace)
 			params = append(params, re.FindAllString(template, -1)...)
 		}
 
-		definition := name + " " + strings.Join(params, " ")
+		definition := key + " " + strings.Join(params, " ")
 		fmt.Println("\n+ " + console.BOLD + definition + "\n  " + console.DEFAULT + script.Info)
 	}
 

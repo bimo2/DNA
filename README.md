@@ -109,7 +109,7 @@ _ buy:xrp 750.000 "" bimo2
 
 ### Void Commands
 
-Commands can be void during execution by prefixing the command with `# ` (space required). This can be useful to log comments or skip steps in a workflow.
+Commands can be void during execution by prefixing the command with `#` (space required). This can be useful to print comments or skipped steps in a workflow.
 
 ```json
 [
@@ -126,10 +126,10 @@ Commands can be void during execution by prefixing the command with `# ` (space 
 go run ./_
 
 # build binary
-sh bin/build.sh
+sh ./bin/build.sh
 
 # clean repository
-sh bin/clean.sh
+sh ./bin/clean.sh
 ```
 
 #
