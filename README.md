@@ -13,10 +13,10 @@ curl -sf https://gobinaries.com/bimo2/DNA/_ | sh
 ## Build + Install
 
 ```zsh
-# requires Go ^1.15
+# requires Go ^1.16
 
 cd path/to/DNA
-sh bin/build.sh
+sh ./bin/build.sh
 ```
 
 For DNA to work globally, the Go binary needs to be in available in `PATH`. Adding `_` to `usr/local/bin` is recommended:
@@ -27,7 +27,7 @@ cp /path/to/DNA/dist/_ /usr/local/bin
 
 ## Configure
 
-DNA searches for a `dna.json` config file for workflow commands. It will search the current directory and recursively look up (`..`) until a config file is found or a `.git` file is reached. Get started by creating a `dna.json` template:
+DNA searches for a `dna.json` config file for workflow commands. It will search the current directory then recursively search the `..` directory until a config file is found or a `.git` directory is reached. Get started by creating a `dna.json` template:
 
 ```zsh
 _ init
@@ -88,7 +88,7 @@ Workflows can accept multiple arguments by passing them to the `_` command. Argu
 
 Template names are only required for documentation and should not be included in the script key. Arguments are passed to the workflow as a stack and each template in the commands is replaced by the next available argument in the stack. By default, templates resolve to an empty string (ex. the workflow is executed with too few arguments).
 
-Executing the `buy:xrp [amount] [card] [address]` workflow defined above will execute the follwoing:
+Executing the `buy:xrp [amount] [card] [address]` workflow defined above will execute as follows:
 
 ```zsh
 _ buy:xrp 750.000 amex_2 bimo2
@@ -107,9 +107,9 @@ _ buy:xrp 750.000 "" bimo2
 # 2 `deposit bimo2 balance.to` <- [address] = "bimo2"
 ```
 
-### Void Commands
+### Comments
 
-Commands can be void during execution by prefixing the command with `#` (space required). This can be useful to print comments or skipped steps in a workflow.
+Comments can be printed during execution by prefixing a command with `#` (space required). This can be useful to print logs or skipped steps in a workflow.
 
 ```json
 [
