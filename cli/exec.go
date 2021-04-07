@@ -4,6 +4,7 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/bimo2/DNA/console"
@@ -13,9 +14,18 @@ import (
 const replace = "\\[\\w+\\]"
 
 // ExecSync : perform synchronous command
-func ExecSync(argv *[]string, script *protocol.DNAScript, path *string) {
+func ExecSync(argv *[]string, script *protocol.DNAScript, env *map[string]string, path *string) {
 	context := (*argv)[0]
 	insert := 0
+
+	useEnv := func(template string) string {
+		for key, value := range *env {
+			match := "&" + key
+			template = strings.ReplaceAll(template, match, value)
+		}
+
+		return template
+	}
 
 	next := func(string) string {
 		if insert++; insert < len(*argv) {
@@ -28,6 +38,7 @@ func ExecSync(argv *[]string, script *protocol.DNAScript, path *string) {
 	start := time.Now()
 
 	for _, template := range script.Commands {
+		template = useEnv(template)
 		re := regexp.MustCompile(replace)
 		command := re.ReplaceAllStringFunc(template, next)
 
