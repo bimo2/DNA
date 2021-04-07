@@ -12,7 +12,7 @@ import (
 
 const (
 	// VERSION : DNA version
-	VERSION = "0.2.1"
+	VERSION = "0.3.0"
 
 	// FILENAME : DNA config filename
 	FILENAME = "dna.json"
@@ -69,7 +69,7 @@ func main() {
 			return
 		}
 
-		cli.ExecSync(&argv, &script, path)
+		cli.ExecSync(&argv, &script, &config.Env, path)
 	}
 }
 

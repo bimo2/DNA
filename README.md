@@ -107,6 +107,34 @@ _ buy:xrp 750.000 "" bimo2
 # 2 `deposit bimo2 balance.to` <- [address] = "bimo2"
 ```
 
+### Environment
+
+DNA supports environment variables by defining them in the `env` object. Variables can be referenced in any command by prefixing the key with `&`:
+
+```json
+{
+  "_version": 0,
+  "env": {
+    "AMEX_CARD": "amex_2"
+  },
+  "scripts": {
+    "use_amex": {
+      "info": "Set default payment method (American Express)",
+      "commands": [
+        "pay -s &AMEX_CARD",
+      ]
+    }
+  }
+}
+```
+
+Executing the `use_amex` workflow defined above will execute as follows:
+
+```zsh
+_ use_amex
+# 0 `pay -s amex_2`
+```
+
 ### Comments
 
 Comments can be printed during execution by prefixing a command with `#` (space required). This can be useful to print logs or skipped steps in a workflow.
