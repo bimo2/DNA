@@ -11,6 +11,9 @@ import (
 const template = `
 {
 	"_version": 0,
+	"env": {
+		"PORT": "default_port"
+	},
 	"scripts": {
 		"install": {
 			"info": "Install dependencies",
@@ -18,23 +21,22 @@ const template = `
 				"# YOUR INSTALL COMMAND"
 			]
 		},
-		"build": {
-			"info": "Package for distribution",
-			"commands": [
-				"# YOUR BUILD COMMAND"
-			]
-		},
 		"dev": {
 			"info": "Start development server",
 			"commands": [
-				"# YOUR DEV COMMAND"
+				"# YOUR DEV COMMAND &PORT"
+			]
+		},
+		"build": {
+			"info": "Create production build",
+			"commands": [
+				"# YOUR BUILD COMMAND"
 			]
 		},
 		"test": {
 			"info": "Run test suites",
 			"commands": [
-				"# YOUR UNIT TEST COMMAND [file]",
-				"# YOUR INTEGRATION TEST COMMAND"
+				"# YOUR TEST COMMAND [file]"
 			]
 		}
 	}
