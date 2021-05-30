@@ -30,7 +30,7 @@ const template = `
 		"build": {
 			"info": "Create production build",
 			"commands": [
-				"# YOUR BUILD COMMAND"
+				"# YOUR BUILD COMMAND [beta=0]"
 			]
 		},
 		"test": {
