@@ -12,7 +12,7 @@ import (
 
 const (
 	// VERSION : DNA version
-	VERSION = "0.3.0"
+	VERSION = "0.4.0"
 
 	// FILENAME : DNA config filename
 	FILENAME = "dna.json"
@@ -44,6 +44,13 @@ func main() {
 			message := "`" + FILENAME + "` already exists"
 			console.Error(message)
 		}
+
+	case "check", "ck":
+		if notFound(config) {
+			return
+		}
+
+		cli.Check(&config.System, path)
 
 	case "list", "ls":
 		if notFound(config) {
@@ -81,6 +88,7 @@ func listCommands(init bool) {
 		fmt.Println("\n- " + console.BOLD + "init, i\n  " + console.DEFAULT + "Create `dna.json` template")
 	}
 
+	fmt.Println("\n- " + console.BOLD + "check, ck\n  " + console.DEFAULT + "Check system requirements")
 	fmt.Println("\n- " + console.BOLD + "list, ls\n  " + console.DEFAULT + "List all project scripts")
 	fmt.Println("\n- " + console.BOLD + "version, v\n  " + console.DEFAULT + "Get version information")
 	fmt.Println()

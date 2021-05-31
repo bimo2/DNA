@@ -32,7 +32,7 @@ func List(scripts *map[string]protocol.DNAScript) {
 		script := (*scripts)[key]
 
 		for _, template := range script.Commands {
-			re := regexp.MustCompile(replace)
+			re := regexp.MustCompile(replacePattern)
 			params = append(params, re.FindAllString(template, -1)...)
 		}
 

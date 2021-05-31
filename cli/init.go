@@ -11,6 +11,9 @@ import (
 const template = `
 {
 	"_version": 0,
+	"_system": {
+		"Go": "go"
+	},
 	"env": {
 		"PORT": "default_port"
 	},
@@ -30,7 +33,7 @@ const template = `
 		"build": {
 			"info": "Create production build",
 			"commands": [
-				"# YOUR BUILD COMMAND"
+				"# YOUR BUILD COMMAND [alpha=0]"
 			]
 		},
 		"test": {

@@ -11,12 +11,14 @@ import (
 	"github.com/bimo2/DNA/protocol"
 )
 
-const replace = "\\[\\w+\\]"
+const replacePattern = `\[\w+(=\w+)?\]`
+const tokenPattern = `\w+`
 
 // ExecSync : perform synchronous command
 func ExecSync(argv *[]string, script *protocol.DNAScript, env *map[string]string, path *string) {
 	context := (*argv)[0]
 	insert := 0
+	re := regexp.MustCompile(tokenPattern)
 
 	useEnv := func(template string) string {
 		for key, value := range *env {
@@ -27,9 +29,12 @@ func ExecSync(argv *[]string, script *protocol.DNAScript, env *map[string]string
 		return template
 	}
 
-	next := func(string) string {
+	next := func(template string) string {
+
 		if insert++; insert < len(*argv) {
 			return (*argv)[insert]
+		} else if tokens := re.FindAllString(template, -1); len(tokens) > 1 {
+			return tokens[1]
 		}
 
 		return ""
@@ -39,7 +44,7 @@ func ExecSync(argv *[]string, script *protocol.DNAScript, env *map[string]string
 
 	for _, template := range script.Commands {
 		template = useEnv(template)
-		re := regexp.MustCompile(replace)
+		re := regexp.MustCompile(replacePattern)
 		command := re.ReplaceAllStringFunc(template, next)
 
 		if command[:2] == "# " {

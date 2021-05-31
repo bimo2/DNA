@@ -15,6 +15,7 @@ const (
 // DNAFile : user defined DNA config
 type DNAFile struct {
 	Version int                  `json:"_version"`
+	System  map[string]string    `json:"_system"`
 	Env     map[string]string    `json:"env"`
 	Scripts map[string]DNAScript `json:"scripts"`
 }
