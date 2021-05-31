@@ -12,7 +12,7 @@ import (
 
 const (
 	// VERSION : DNA version
-	VERSION = "0.3.0"
+	VERSION = "0.4.0"
 
 	// FILENAME : DNA config filename
 	FILENAME = "dna.json"

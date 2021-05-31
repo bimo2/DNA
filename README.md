@@ -12,7 +12,7 @@ curl -sf https://gobinaries.com/bimo2/DNA/_ | sh
 
 ### Build + Install
 
-[Build the DNA binary](#developers) then add it to your `$PATH` variable. Copying `_` to `/usr/local/bin` is recommended:
+[Build the DNA binary](#develop) then add it to your `$PATH` variable. Copying `_` to `/usr/local/bin` is recommended:
 
 ```zsh
 cp /path/to/DNA/dist/_ /usr/local/bin
@@ -35,6 +35,9 @@ Any `dna.json` config should contain a top level `_version` key to specify the D
 ```json
 {
   "_version": 0,
+  "_system": {
+    "Banking": "/usr/local/bin/banking"
+  },
   "env": {
     "BURN_ADDRESS": "X7TYFRtYHMcHtT2qNycMwgXzqPp7Pb16cH84uj5Hc7GtrsB"
   },
@@ -42,7 +45,7 @@ Any `dna.json` config should contain a top level `_version` key to specify the D
     "buy:xrp": {
       "info": "Buy XRP tokens",
       "commands": [
-        "buy [amount] xrp",
+        "buy [amount=100] xrp",
         "deposit -m [address]"
       ]
     },
@@ -65,11 +68,15 @@ Any `dna.json` config should contain a top level `_version` key to specify the D
 
 #### Arguments
 
-Tasks can accept multiple arguments by passing them to the `_` command. You can define arguments by adding `[templates]` to commands. Arguments are passed to the task as a stack so each template in the execution is replaced by the next available argument in the stack. By default, templates resolve to an empty string.
+Tasks can accept multiple arguments by passing them to the `_` command. You can define arguments by adding `[templates]` to commands. Arguments are passed to the task as a stack so each template in the execution is replaced by the next available argument in the stack. You can specify default values for undefined arguments by adding them to the `[template=0]`. Templates without defaults will resolve to an empty string.
 
 #### Environment Variables
 
 Environment variables are DNA constants that can be used in any command. You can set environment variables by defining them in the `env` object. Note that all environment variables should be valid JSON strings only. Variables can be referenced in commands by name prefixed with `&`.
+
+#### System Requirements
+
+The `_ check` command verifies if the system has the required programs and files installed to use the project scripts. You can define system requirements as key/values in the top level `_system` object. For commands that should be available in `$PATH`, use the command name (ex. `go` or `node`) as the value and for required files, like dynamic C/C++ headers, use the absolute path of the file.
 
 #### Comments
 
@@ -84,8 +91,8 @@ _ buy:xrp 750.000 bimo2$balance.to
 # `buy 750.000 xrp`
 # `deposit -m bimo2$balance.to`
 
-_ buy:xrp 750.000
-# `buy 750.000 xrp`
+_ buy:xrp
+# `buy 100 xrp`
 # `deposit -m`
 
 _ exchange 100 xrp btc

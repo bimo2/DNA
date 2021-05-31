@@ -21,10 +21,9 @@ func Check(files *map[string]string, path *string) {
 	sort.Strings(keys)
 
 	for _, key := range keys {
+		var cmd *exec.Cmd
 		found := true
 		target := (*files)[key]
-
-		var cmd *exec.Cmd
 
 		if strings.HasPrefix(target, "/") {
 			check := "test -f " + target
